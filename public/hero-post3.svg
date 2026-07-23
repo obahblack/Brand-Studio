@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#1e3a5f"/>
+  <text x="200" y="250" font-family="Arial" font-size="24" fill="#2d5a8a" text-anchor="middle">LinkedIn Post</text>
+  <rect x="40" y="40" width="320" height="200" rx="8" fill="#234e7a"/>
+  <rect x="60" y="60" width="100" height="100" rx="50" fill="#2d5a8a"/>
+  <rect x="180" y="70" width="160" height="10" rx="4" fill="#2d5a8a"/>
+  <rect x="180" y="90" width="120" height="10" rx="4" fill="#264a70"/>
+  <rect x="180" y="110" width="140" height="10" rx="4" fill="#264a70"/>
+  <rect x="180" y="140" width="80" height="30" rx="4" fill="#3b82f6"/>
+  <rect x="40" y="280" width="320" height="12" rx="4" fill="#234e7a"/>
+  <rect x="40" y="304" width="250" height="12" rx="4" fill="#1e3a5f"/>
+  <rect x="40" y="328" width="280" height="12" rx="4" fill="#1e3a5f"/>
+</svg>
