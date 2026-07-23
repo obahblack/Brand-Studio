@@ -90,9 +90,12 @@ export function Testimonials() {
     <section className="py-24 bg-[#f5f5f5] overflow-hidden" id="testimonials">
       <div className="container mx-auto px-4 mb-12">
         <ScrollReveal>
-          <h2 className="text-4xl md:text-5xl font-bold text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             Don&apos;t just take <span className="text-gray-400">our word</span>
           </h2>
+          <p className="text-gray-500 text-lg text-center max-w-2xl mx-auto">
+            Hear from teams who have transformed their brand identity with Brand Studio.
+          </p>
         </ScrollReveal>
       </div>
 

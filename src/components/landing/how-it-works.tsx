@@ -33,6 +33,9 @@ export function HowItWorks() {
               <h2 className="text-4xl md:text-5xl font-bold">
                 How it works
               </h2>
+              <p className="text-gray-500 text-lg mt-4 max-w-xl">
+                Three simple steps to get your complete brand system in under 2 minutes.
+              </p>
             </div>
             <Link
               href="/signup"

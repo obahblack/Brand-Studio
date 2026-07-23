@@ -34,9 +34,12 @@ export function FAQ() {
     <section className="py-24 bg-[#f5f5f5]" id="faq">
       <div className="container mx-auto px-4">
         <ScrollReveal>
-          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
             Let&apos;s <span className="text-gray-400">clear things up</span>
           </h2>
+          <p className="text-gray-500 text-lg text-center mb-16 max-w-2xl mx-auto">
+            Got questions? We&apos;ve got answers. Here&apos;s everything you need to know about Brand Studio.
+          </p>
         </ScrollReveal>
 
         <div className="max-w-3xl mx-auto space-y-4">
