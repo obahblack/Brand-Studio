@@ -12,9 +12,22 @@ export function Footer() {
       {/* Top Footer */}
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row items-start justify-between gap-12">
-          {/* Copyright */}
-          <div className="text-gray-500 text-sm">
-            ©2026 Brand Studio, All rights reserved.
+          {/* Brand + Copyright */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center shrink-0">
+                <span className="text-white font-bold text-sm">B</span>
+              </div>
+              <span className="font-semibold text-gray-900 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
+                Brand Studio
+              </span>
+            </div>
+            <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
+              Generate consistent, on-brand assets for every platform in minutes.
+            </p>
+            <div className="text-gray-500 text-sm pt-1">
+              ©2026 Brand Studio, All rights reserved.
+            </div>
           </div>
 
           {/* Navigation Links */}
