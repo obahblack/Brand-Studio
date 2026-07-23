@@ -25,8 +25,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     "http://localhost:3099",
-    "https://tryinfinity.ai",
-    "https://api.tryinfinity.ai",
+    "https://brand-studio-gamma.vercel.app",
   ],
   logger: {
     disabled: false,
