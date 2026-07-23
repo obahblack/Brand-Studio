@@ -18,7 +18,6 @@ interface BrandKit {
 export default function V2ProjectsPage() {
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
   const [projects, setProjects] = useState<BrandKit[]>([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null)
@@ -58,7 +57,6 @@ export default function V2ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      setLoading(true)
       const response = await fetch('/api/brand-kit')
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}))
@@ -69,8 +67,6 @@ export default function V2ProjectsPage() {
     } catch (err) {
       console.error('Error fetching projects:', err)
       setError(err instanceof Error ? err.message : 'Failed to load projects')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -115,14 +111,6 @@ export default function V2ProjectsPage() {
     if (diffHours < 24) return `${diffHours}h ago`
     if (diffDays < 7) return `${diffDays}d ago`
     return date.toLocaleDateString()
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 text-violet-600 animate-spin" />
-      </div>
-    )
   }
 
   if (error) {

@@ -161,7 +161,6 @@ export default function V2ProjectDetailPage() {
   const [generating, setGenerating] = useState(false)
   const [project, setProject] = useState<BrandKit | null>(null)
   const [assets, setAssets] = useState<Asset[]>([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [openAssetDropdown, setOpenAssetDropdown] = useState<string | null>(null)
   const [assetDropdownPos, setAssetDropdownPos] = useState<{ top: number; left: number } | null>(null)
@@ -247,7 +246,6 @@ export default function V2ProjectDetailPage() {
 
   const fetchProject = async () => {
     try {
-      setLoading(true)
       const response = await fetch(`/api/brand-kit/${id}`)
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}))
@@ -259,8 +257,6 @@ export default function V2ProjectDetailPage() {
     } catch (err) {
       console.error('Error fetching project:', err)
       setError(err instanceof Error ? err.message : 'Failed to load project')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -367,14 +363,6 @@ export default function V2ProjectDetailPage() {
     } finally {
       setGenerating(false)
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 text-violet-600 animate-spin" />
-      </div>
-    )
   }
 
   if (error || !project) {

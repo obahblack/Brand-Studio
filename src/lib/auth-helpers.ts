@@ -31,17 +31,11 @@ export async function getSessionFromRequest(request: Request) {
     const cookies = parseCookies(cookieHeader)
 
     const signedToken = cookies['better-auth.session_token']
-    if (!signedToken) {
-      console.log('[auth] No session cookie found. Available:', Object.keys(cookies))
-      return null
-    }
+    if (!signedToken) return null
 
     const decoded = decodeURIComponent(signedToken)
     const token = await verifySignedCookie(decoded)
-    if (!token) {
-      console.log('[auth] Cookie signature verification failed')
-      return null
-    }
+    if (!token) return null
 
     const [sessionRow] = await db
       .select()
@@ -49,14 +43,8 @@ export async function getSessionFromRequest(request: Request) {
       .where(eq(session.token, token))
       .limit(1)
 
-    if (!sessionRow) {
-      console.log('[auth] No session found for token')
-      return null
-    }
-    if (new Date(sessionRow.expiresAt) < new Date()) {
-      console.log('[auth] Session expired')
-      return null
-    }
+    if (!sessionRow) return null
+    if (new Date(sessionRow.expiresAt) < new Date()) return null
 
     const [userRow] = await db
       .select()
@@ -64,14 +52,10 @@ export async function getSessionFromRequest(request: Request) {
       .where(eq(user.id, sessionRow.userId))
       .limit(1)
 
-    if (!userRow) {
-      console.log('[auth] No user found for session')
-      return null
-    }
+    if (!userRow) return null
 
     return { session: sessionRow, user: userRow }
   } catch (err) {
-    console.error('[auth] Error in getSessionFromRequest:', err)
     return null
   }
 }
