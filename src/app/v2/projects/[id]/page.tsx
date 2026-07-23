@@ -330,6 +330,44 @@ export default function V2ProjectDetailPage() {
     }
   }
 
+  const handleAddChannels = async () => {
+    if (selectedChannels.length === 0 || !id || !selectedCampaign) return
+    setGenerating(true)
+    try {
+      const response = await fetch('/api/generate/assets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandKitId: id,
+          platforms: selectedChannels,
+          campaignName: selectedCampaign,
+          description: filteredCampaignAssets[0]?.metadata?.description || undefined,
+        }),
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to add channels')
+      }
+      setShowChannelPicker(false)
+      setSelectedChannels([])
+      // Poll for new assets
+      for (let i = 0; i < 30; i++) {
+        await new Promise(r => setTimeout(r, 1000))
+        const res = await fetch(`/api/brand-kit/${id}`)
+        const json = await res.json()
+        if (json.assets && json.assets.length > assets.length) {
+          setAssets(json.assets)
+          return
+        }
+      }
+      fetchProject()
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -477,6 +515,57 @@ export default function V2ProjectDetailPage() {
                 {deletingCampaign ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</> : 'Delete Campaign'}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Channel Modal */}
+      {showChannelPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/40" onClick={() => { setShowChannelPicker(false); setSelectedChannels([]) }} />
+          <div className="relative z-10 w-full max-w-[480px] bg-white rounded-2xl shadow-2xl p-6 mx-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Add Channels</h3>
+              <button onClick={() => { setShowChannelPicker(false); setSelectedChannels([]) }} className="text-gray-400 hover:text-gray-600 p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-500">Select channels to add to this campaign</p>
+            <div className="grid grid-cols-3 gap-2">
+              {allPlatforms
+                .filter(p => {
+                  const existingTypes = filteredCampaignAssets.map(a => a.assetType)
+                  return !existingTypes.includes(p.id) && !existingTypes.includes(`${p.id}-post`) && !existingTypes.includes(`${p.id}-card`) && !existingTypes.includes(`${p.id}-thumbnail`)
+                })
+                .map((platform) => {
+                  const isSelected = selectedChannels.includes(platform.id)
+                  return (
+                    <button
+                      key={platform.id}
+                      onClick={() => setSelectedChannels(prev => isSelected ? prev.filter(c => c !== platform.id) : [...prev, platform.id])}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                        isSelected
+                          ? 'border-violet-500 bg-violet-50 text-violet-700'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      <platform.icon className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{platform.name}</span>
+                    </button>
+                  )
+                })}
+            </div>
+            <button
+              onClick={handleAddChannels}
+              disabled={selectedChannels.length === 0 || generating}
+              className="w-full py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+            >
+              {generating ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Adding...</>
+              ) : (
+                <>Add Channel{selectedChannels.length > 1 ? 's' : ''}</>
+              )}
+            </button>
           </div>
         </div>
       )}
@@ -883,15 +972,10 @@ export default function V2ProjectDetailPage() {
               </div>
               <button
                 onClick={() => {
-                  const existingPlatforms = filteredCampaignAssets.map(a => a.assetType)
-                  const availablePlatforms = allPlatforms.filter(p => !existingPlatforms.includes(p.id) && !existingPlatforms.includes(`${p.id}-post`) && !existingPlatforms.includes(`${p.id}-card`) && !existingPlatforms.includes(`${p.id}-thumbnail`))
-                  if (availablePlatforms.length === 0) return
-                  setSelectedGeneratePlatforms(availablePlatforms.map(p => p.id))
-                  setCampaignName(selectedCampaign || '')
-                  setGenerateDescription('')
-                  setShowPlatformPicker(true)
+                  setSelectedChannels([])
+                  setShowChannelPicker(true)
                 }}
-                className={`${allPlatforms[0] ? 'aspect-square' : 'aspect-square'} w-full rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-3 bg-gray-50/50 hover:border-violet-300 hover:bg-violet-50/30 transition-colors cursor-pointer`}
+                className="aspect-square w-full rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-3 bg-gray-50/50 hover:border-violet-300 hover:bg-violet-50/30 transition-colors cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                   <Plus className="w-5 h-5 text-gray-400" />
