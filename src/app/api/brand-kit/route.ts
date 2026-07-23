@@ -6,6 +6,8 @@ import { getSessionFromRequest } from '@/lib/auth-helpers'
 
 export async function GET(request: Request) {
   try {
+    const cookieHeader = request.headers.get('cookie') || ''
+    console.log('[api/brand-kit] Cookies:', cookieHeader.substring(0, 200))
     const sess = await getSessionFromRequest(request)
     if (!sess) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
