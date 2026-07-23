@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,12 +10,14 @@ import { Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/v2/projects'
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,13 +27,13 @@ export default function LoginPage() {
       const result = await authClient.signIn.email({
         email,
         password,
-        callbackURL: "/dashboard",
+        callbackURL: redirectTo,
       })
       if (result?.error) {
         setError(result.error.message || 'Failed to sign in')
         setLoading(false)
       } else {
-        router.push('/dashboard')
+        router.push(redirectTo)
       }
     } catch (err: any) {
       setError(err?.message || 'Failed to sign in')
@@ -45,7 +47,7 @@ export default function LoginPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: redirectTo,
       })
     } catch (err: any) {
       setError(err?.message || 'Failed to sign in with Google')
@@ -143,5 +145,20 @@ export default function LoginPage() {
         </p>
       </CardFooter>
     </Card>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <Card className="w-full shadow-lg">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+          <CardDescription>Sign in to your account to continue</CardDescription>
+        </CardHeader>
+      </Card>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }

@@ -50,12 +50,7 @@ export default function V2Layout({
               Brand Studio
             </span>
           </Link>
-          <Link
-            href="/dashboard"
-            className="px-2 py-1 text-[10px] font-medium rounded bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors"
-          >
-            V1
-          </Link>
+          <div className="w-20" />
         </div>
 
         {/* Nav */}

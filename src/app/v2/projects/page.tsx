@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Plus, LayoutGrid, List, ArrowRight, Loader2, MoreHorizontal, ExternalLink, Trash2, X } from 'lucide-react'
+import { authClient } from '@/lib/auth-client'
 
 interface BrandKit {
   id: string
@@ -15,9 +17,14 @@ interface BrandKit {
   createdAt: string
 }
 
+type PageStatus = 'loading-session' | 'loading-projects' | 'ready' | 'error' | 'empty'
+
 export default function V2ProjectsPage() {
+  const router = useRouter()
+  const sessionResult = authClient.useSession()
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
   const [projects, setProjects] = useState<BrandKit[]>([])
+  const [status, setStatus] = useState<PageStatus>('loading-session')
   const [error, setError] = useState<string | null>(null)
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null)
@@ -25,9 +32,39 @@ export default function V2ProjectsPage() {
   const [deleting, setDeleting] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
 
+  const fetchProjects = useCallback(async () => {
+    setStatus('loading-projects')
+    setError(null)
+    try {
+      const response = await fetch('/api/brand-kit', { credentials: 'include', cache: 'no-store' })
+      if (response.status === 401) {
+        router.push('/login?redirect=/v2/projects')
+        return
+      }
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.error || `Failed to fetch projects (${response.status})`)
+      }
+      const data = await response.json()
+      const list = data.brandKits || []
+      setProjects(list)
+      setStatus(list.length === 0 ? 'empty' : 'ready')
+    } catch (err) {
+      console.error('Error fetching projects:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load projects')
+      setStatus('error')
+    }
+  }, [router])
+
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    if (!sessionResult.isPending) {
+      if (!sessionResult.data) {
+        router.push('/login?redirect=/v2/projects')
+      } else {
+        fetchProjects()
+      }
+    }
+  }, [sessionResult.isPending, sessionResult.data, fetchProjects, router])
 
   const closeDropdown = useCallback(() => {
     setOpenDropdownId(null)
@@ -55,28 +92,15 @@ export default function V2ProjectsPage() {
     setOpenDropdownId(projectId)
   }
 
-  const fetchProjects = async () => {
-    try {
-      const response = await fetch('/api/brand-kit')
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}))
-        throw new Error(errData.error || `Failed to fetch projects (${response.status})`)
-      }
-      const data = await response.json()
-      setProjects(data.brandKits || [])
-    } catch (err) {
-      console.error('Error fetching projects:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load projects')
-    }
-  }
-
   const handleDelete = async () => {
     if (!deleteTarget) return
     setDeleting(true)
     try {
       const response = await fetch(`/api/brand-kit/${deleteTarget.id}`, { method: 'DELETE' })
       if (!response.ok) throw new Error('Failed to delete')
-      setProjects(prev => prev.filter(p => p.id !== deleteTarget.id))
+      const updated = projects.filter(p => p.id !== deleteTarget.id)
+      setProjects(updated)
+      setStatus(updated.length === 0 ? 'empty' : 'ready')
       setDeleteTarget(null)
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Something went wrong')
@@ -105,7 +129,7 @@ export default function V2ProjectsPage() {
     const diffMins = Math.floor(diffMs / 60000)
     const diffHours = Math.floor(diffMins / 60)
     const diffDays = Math.floor(diffHours / 24)
-    
+
     if (diffMins < 1) return 'Just now'
     if (diffMins < 60) return `${diffMins}m ago`
     if (diffHours < 24) return `${diffHours}h ago`
@@ -113,10 +137,51 @@ export default function V2ProjectsPage() {
     return date.toLocaleDateString()
   }
 
-  if (error) {
+  if (status === 'loading-session' || status === 'loading-projects') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="h-8 w-32 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-4 w-48 bg-gray-100 rounded mt-2 animate-pulse" />
+          </div>
+          <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+        </div>
+        <Card className="border-gray-200">
+          <CardContent className="p-0">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_80px] gap-4 px-5 py-3 border-b border-gray-100 bg-gray-50/50">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-3 bg-gray-100 rounded animate-pulse" />
+              ))}
+            </div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="grid grid-cols-[2fr_1fr_1fr_1fr_80px] gap-4 px-5 py-4 items-center">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {[1, 2, 3].map((j) => (
+                      <div key={j} className="w-4 h-4 rounded bg-gray-100 animate-pulse" />
+                    ))}
+                  </div>
+                  <div>
+                    <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
+                    <div className="h-3 w-24 bg-gray-50 rounded mt-1 animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-5 w-20 bg-gray-100 rounded-full animate-pulse" />
+                <div className="h-4 w-12 bg-gray-100 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-gray-50 rounded animate-pulse" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (status === 'error') {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-500">{error}</p>
+        <p className="text-gray-500">{error || 'Something went wrong'}</p>
         <Button onClick={fetchProjects} variant="outline" className="mt-4">
           Try Again
         </Button>
@@ -126,7 +191,6 @@ export default function V2ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="fixed inset-0 bg-black/40" onClick={() => !deleting && setDeleteTarget(null)} />
@@ -181,7 +245,7 @@ export default function V2ProjectsPage() {
         </div>
       </div>
 
-      {projects.length === 0 ? (
+      {status === 'empty' ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 rounded-full bg-violet-50 flex items-center justify-center mx-auto mb-4">
             <Plus className="w-6 h-6 text-violet-600" />
@@ -291,7 +355,6 @@ export default function V2ProjectsPage() {
         </div>
       )}
 
-      {/* Fixed-position dropdown menu */}
       {openDropdownId && dropdownPos && (() => {
         const project = projects.find(p => p.id === openDropdownId)
         if (!project) return null

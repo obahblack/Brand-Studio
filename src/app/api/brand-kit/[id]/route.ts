@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { brandKits, assets } from '@/db/schema'
-import { eq, asc } from 'drizzle-orm'
+import { eq, and, asc } from 'drizzle-orm'
 import { getSessionFromRequest } from '@/lib/auth-helpers'
 
 export async function GET(
@@ -19,7 +19,7 @@ export async function GET(
     const [brandKit] = await db
       .select()
       .from(brandKits)
-      .where(eq(brandKits.id, id))
+      .where(and(eq(brandKits.id, id), eq(brandKits.userId, sess.user.id)))
       .limit(1)
 
     if (!brandKit) {
@@ -50,6 +50,16 @@ export async function DELETE(
     }
 
     const { id } = await params
+
+    const [brandKit] = await db
+      .select({ id: brandKits.id })
+      .from(brandKits)
+      .where(and(eq(brandKits.id, id), eq(brandKits.userId, sess.user.id)))
+      .limit(1)
+
+    if (!brandKit) {
+      return NextResponse.json({ error: 'Brand kit not found' }, { status: 404 })
+    }
 
     await db.delete(brandKits).where(eq(brandKits.id, id))
 

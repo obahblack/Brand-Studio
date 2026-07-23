@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { assets } from '@/db/schema'
+import { assets, brandKits } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { getSessionFromRequest } from '@/lib/auth-helpers'
 
@@ -15,6 +15,16 @@ export async function DELETE(
     }
 
     const { id, assetId } = await params
+
+    const [brandKit] = await db
+      .select({ id: brandKits.id })
+      .from(brandKits)
+      .where(and(eq(brandKits.id, id), eq(brandKits.userId, sess.user.id)))
+      .limit(1)
+
+    if (!brandKit) {
+      return NextResponse.json({ error: 'Brand kit not found' }, { status: 404 })
+    }
 
     const [asset] = await db
       .select()
