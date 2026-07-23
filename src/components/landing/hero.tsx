@@ -49,7 +49,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section className="relative bg-[#f0f0f0] overflow-hidden">
+    <section suppressHydrationWarning className="relative bg-[#f0f0f0] overflow-hidden">
       {/* Floating Nav */}
       <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
         <nav className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-sm border-2 border-gray-200" style={{ width: '820px', maxWidth: '90vw' }}>
