@@ -3,7 +3,6 @@ import { db } from '@/db'
 import { brandKits, assets } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { renderAllTemplates } from '@/lib/generators/templates/template-renderer'
-import { uploadAsset } from '@/lib/storage/upload'
 import { getSessionFromRequest } from '@/lib/auth-helpers'
 import type { DesignSystem } from '@/types/database'
 
@@ -14,6 +13,16 @@ const platformToTemplate: Record<string, string> = {
   linkedin: 'linkedin-post',
   tiktok: 'tiktok-post',
   youtube: 'youtube-thumbnail',
+  snapchat: 'instagram-post',
+  reddit: 'twitter-card',
+  discord: 'twitter-card',
+  telegram: 'twitter-card',
+  whatsapp: 'instagram-post',
+  mastodon: 'twitter-card',
+  bluesky: 'twitter-card',
+  twitch: 'youtube-thumbnail',
+  medium: 'twitter-card',
+  substack: 'twitter-card',
 }
 
 export async function POST(request: Request) {
@@ -105,21 +114,14 @@ async function generateAssets(
 
     for (const [templateType, buffer] of results) {
       const fileName = `${templateType}.png`
+      const base64 = buffer.toString('base64')
 
-      const { url } = await uploadAsset(
-        brandKitId,
-        templateType,
-        fileName,
-        buffer,
-        'image/png'
-      )
-
-      await db.insert(assets).values({
+      const [asset] = await db.insert(assets).values({
         brandKitId,
         assetType: templateType,
         assetName: fileName,
-        fileUrl: url,
         fileType: 'image/png',
+        fileData: base64,
         metadata: {
           campaign: campaignName || 'Untitled',
           template: templateType,
@@ -127,7 +129,9 @@ async function generateAssets(
           width: getTemplateWidth(templateType),
           height: getTemplateHeight(templateType)
         }
-      })
+      }).returning({ id: assets.id })
+
+      await db.update(assets).set({ fileUrl: `/api/serve/${asset.id}` }).where(eq(assets.id, asset.id))
     }
 
     console.log(`Assets generated for brand kit ${brandKitId}: ${templateNames.join(', ')}`)

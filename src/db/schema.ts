@@ -83,6 +83,7 @@ export const assets = pgTable("assets", {
   assetName: text("asset_name").notNull(),
   fileUrl: text("file_url"),
   fileType: text("file_type"),
+  fileData: text("file_data"),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

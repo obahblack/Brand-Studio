@@ -24,6 +24,16 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   'youtube-thumbnail': YouTubeIcon,
   pinterest: PinterestIcon,
   threads: ThreadsIcon,
+  snapchat: SnapchatIcon,
+  reddit: RedditIcon,
+  discord: DiscordIcon,
+  telegram: TelegramIcon,
+  whatsapp: WhatsAppIcon,
+  mastodon: MastodonIcon,
+  bluesky: BlueskyIcon,
+  twitch: TwitchIcon,
+  medium: MediumIcon,
+  substack: SubstackIcon,
 }
 
 const platformNames: Record<string, string> = {
@@ -34,6 +44,11 @@ const platformNames: Record<string, string> = {
   tiktok: 'TikTok', 'tiktok-post': 'TikTok',
   youtube: 'YouTube', 'youtube-thumbnail': 'YouTube',
   pinterest: 'Pinterest', threads: 'Threads',
+  snapchat: 'Snapchat', reddit: 'Reddit',
+  discord: 'Discord', telegram: 'Telegram',
+  whatsapp: 'WhatsApp', mastodon: 'Mastodon',
+  bluesky: 'Bluesky', twitch: 'Twitch',
+  medium: 'Medium', substack: 'Substack',
 }
 
 const platformAspects: Record<string, { aspect: string; label: string; size: string }> = {
@@ -51,6 +66,16 @@ const platformAspects: Record<string, { aspect: string; label: string; size: str
   'youtube-thumbnail': { aspect: 'aspect-video', label: '16:9', size: '1280 × 720' },
   pinterest: { aspect: 'aspect-[2/3]', label: '2:3', size: '1000 × 1500' },
   threads: { aspect: 'aspect-square', label: '1:1', size: '1080 × 1080' },
+  snapchat: { aspect: 'aspect-[9/16]', label: '9:16', size: '1080 × 1920' },
+  reddit: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
+  discord: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
+  telegram: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
+  whatsapp: { aspect: 'aspect-square', label: '1:1', size: '800 × 800' },
+  mastodon: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
+  bluesky: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
+  twitch: { aspect: 'aspect-video', label: '16:9', size: '1280 × 720' },
+  medium: { aspect: 'aspect-video', label: '16:9', size: '1400 × 788' },
+  substack: { aspect: 'aspect-video', label: '16:9', size: '1200 × 675' },
 }
 
 const allPlatforms = [
@@ -569,7 +594,7 @@ export default function V2ProjectDetailPage() {
             className="fixed z-50 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1"
             style={{ top: assetDropdownPos.top, left: assetDropdownPos.left }}
           >
-            <button onClick={() => { closeAssetDropdown(); setSelectedCampaign(asset.id); setShowAssetDetail(true) }}
+            <button onClick={() => { closeAssetDropdown(); setSelectedCampaign(asset.metadata?.campaign || 'Untitled'); setShowAssetDetail(true) }}
               className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left">
               <ExternalLink className="w-3.5 h-3.5" /> View
             </button>
