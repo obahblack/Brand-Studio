@@ -27,19 +27,19 @@ const benefits = [
 export function Benefits() {
   return (
     <section className="py-24 px-11" id="benefits">
-      <div className="bg-[#111111] rounded-3xl py-20 px-8">
+      <div className="bg-black rounded-3xl py-20 px-8">
         <div className="max-w-[1200px] mx-auto">
           <ScrollReveal>
             <div className="flex justify-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5">
-                <Sparkles className="w-4 h-4 text-violet-400" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20">
+                <Sparkles className="w-4 h-4 text-white/70" />
                 <span className="text-sm font-medium text-white/80">Core Features</span>
               </div>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-4">
               What&apos;s inside Brand Studio?
             </h2>
-            <p className="text-white/60 text-center text-lg mb-16 max-w-2xl mx-auto">
+            <p className="text-white/50 text-center text-lg mb-16 max-w-2xl mx-auto">
               Teams choose Brand Studio because it simplifies the complexity of building and maintaining a consistent brand.
             </p>
           </ScrollReveal>
@@ -47,12 +47,12 @@ export function Benefits() {
           <div className="grid md:grid-cols-2 gap-4">
             {benefits.map((benefit, index) => (
               <ScrollReveal key={benefit.title} delay={index * 0.1}>
-                <div className="bg-white rounded-2xl p-8 h-full">
-                  <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center mb-6">
-                    <benefit.icon className="w-6 h-6 text-violet-600" />
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-full">
+                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-6">
+                    <benefit.icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-xl font-bold text-white mb-3">{benefit.title}</h3>
+                  <p className="text-white/60 leading-relaxed">
                     {benefit.description}
                   </p>
                 </div>
