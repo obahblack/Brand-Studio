@@ -31,7 +31,7 @@ export function Benefits() {
         <div className="max-w-[1200px] mx-auto">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-4">
-              What&apos;s inside Brand Studio?
+              Why teams stick with us
             </h2>
             <p className="text-white/50 text-center text-lg mb-16 max-w-2xl mx-auto">
               Teams choose Brand Studio because it simplifies the complexity of building and maintaining a consistent brand.
