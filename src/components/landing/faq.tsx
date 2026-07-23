@@ -35,7 +35,7 @@ export function FAQ() {
       <div className="container mx-auto px-4">
         <ScrollReveal>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            Let&apos;s <span className="text-gray-400">clear things up</span>
+            Let&apos;s <span className="text-violet-600">clear things up</span>
           </h2>
           <p className="text-gray-500 text-lg text-center mb-16 max-w-2xl mx-auto">
             Got questions? We&apos;ve got answers. Here&apos;s everything you need to know about Brand Studio.

@@ -91,7 +91,7 @@ export function Testimonials() {
       <div className="container mx-auto px-4 mb-12">
         <ScrollReveal>
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Don&apos;t just take <span className="text-gray-400">our word</span>
+            Don&apos;t just take <span className="text-violet-600">our word</span>
           </h2>
           <p className="text-gray-500 text-lg text-center max-w-2xl mx-auto">
             Hear from teams who have transformed their brand identity with Brand Studio.

@@ -56,7 +56,7 @@ export function Features() {
       <div className="container mx-auto px-4">
         <ScrollReveal>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            What we <span className="text-gray-400">bring</span>
+            What we <span className="text-violet-600">bring</span>
             <br />
             to the table
           </h2>

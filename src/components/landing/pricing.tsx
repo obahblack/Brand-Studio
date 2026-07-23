@@ -44,7 +44,7 @@ export function Pricing() {
       <div className="container mx-auto px-4">
         <ScrollReveal>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            Invest in <span className="text-gray-400">better design</span>
+            Invest in <span className="text-violet-600">better design</span>
           </h2>
           <p className="text-gray-500 text-lg text-center mb-16 max-w-2xl mx-auto">
             Choose the plan that fits your needs. Start free and upgrade as you grow.
