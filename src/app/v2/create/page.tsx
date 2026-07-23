@@ -111,7 +111,7 @@ export default function V2CreatePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-[650px] space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Create New Project</h1>
         <p className="text-sm text-gray-500 mt-1">Enter your brand details and select platforms to generate assets for</p>
