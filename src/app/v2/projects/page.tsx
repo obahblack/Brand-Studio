@@ -61,7 +61,8 @@ export default function V2ProjectsPage() {
       setLoading(true)
       const response = await fetch('/api/brand-kit')
       if (!response.ok) {
-        throw new Error('Failed to fetch projects')
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.error || `Failed to fetch projects (${response.status})`)
       }
       const data = await response.json()
       setProjects(data.brandKits || [])
