@@ -50,6 +50,7 @@ function SignupForm() {
       await authClient.signIn.social({
         provider: "google",
         callbackURL: redirectTo,
+        errorCallbackURL: "/auth/error",
       })
     } catch (err: any) {
       setError(err?.message || 'Failed to sign up with Google')
