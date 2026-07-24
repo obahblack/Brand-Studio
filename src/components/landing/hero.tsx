@@ -123,7 +123,7 @@ export function Hero() {
       </div>
 
       {/* Centered Text Content */}
-      <div className="h-screen flex flex-col items-center justify-center text-center px-4 -mt-24">
+      <div className="h-screen max-h-[1000px] flex flex-col items-center justify-center text-center px-4 -mt-24">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
