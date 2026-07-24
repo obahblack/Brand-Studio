@@ -57,7 +57,7 @@ export function Hero() {
   ]
 
   return (
-    <section suppressHydrationWarning className="relative bg-[#f0f0f0] overflow-hidden">
+    <section suppressHydrationWarning className="relative bg-[#f0f0f0]">
       {/* Floating Nav */}
       <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90vw] max-w-[820px]">
         <nav className="relative flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-4 sm:px-6 py-3 shadow-sm border-2 border-gray-200">
@@ -123,7 +123,7 @@ export function Hero() {
       </div>
 
       {/* Centered Text + Gallery Layout */}
-      <div className="max-h-[1000px] flex flex-col items-center px-4 pt-32 md:pt-36">
+      <div className="flex flex-col items-center px-4 pt-32 md:pt-36">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -168,9 +168,9 @@ export function Hero() {
         </motion.div>
 
         {/* Image Gallery */}
-        <div className="w-full mt-[120px] relative z-10 overflow-hidden">
+        <div className="w-full mt-[120px] relative z-10 pb-20 md:pb-24">
           {/* Desktop: centered static row */}
-          <div className="hidden md:flex gap-6 justify-center items-end px-4 max-w-6xl mx-auto pb-16">
+          <div className="hidden md:flex gap-6 justify-center items-end px-4 max-w-6xl mx-auto">
             {images.map((img, index) => (
               <motion.div
                 key={index}
@@ -198,7 +198,7 @@ export function Hero() {
           </div>
 
           {/* Mobile/Tablet: infinite scroll marquee */}
-          <div className="md:hidden flex flex-col items-center pb-12">
+          <div className="md:hidden flex flex-col items-center">
             <style>{`
               @keyframes marquee {
                 0% { transform: translateX(0); }
