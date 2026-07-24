@@ -122,12 +122,13 @@ export function Hero() {
         </nav>
       </div>
 
-      {/* Centered Text Content */}
-      <div className="h-screen max-h-[1000px] flex flex-col items-center justify-center text-center px-4 -mt-24">
+      {/* Centered Text + Gallery Layout */}
+      <div className="max-h-[1000px] flex flex-col items-center px-4 pt-32 md:pt-36">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center"
         >
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
             We design{' '}
@@ -164,6 +165,51 @@ export function Hero() {
           >
             Get Started
           </Link>
+        </motion.div>
+
+        {/* Image Gallery - always 44px below the button */}
+        <motion.div
+          className="flex gap-4 md:gap-6 justify-center items-end px-4 max-w-6xl mx-auto mt-11 pb-16 relative z-10"
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {images.map((img, index) => (
+            <motion.div
+              key={index}
+              className="relative shrink-0 w-56 md:w-72 lg:w-80"
+              style={{ rotate: img.rotate, y: img.y }}
+              whileHover={{ scale: 1.05, rotate: 0, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Image with border radius and clipping */}
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-gray-400 shadow-2xl">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 224px, (max-width: 1024px) 288px, 320px"
+                />
+              </div>
+              
+              {/* Floating Pills - positioned outside the image frame */}
+              {img.pills.map((pill, pillIndex) => (
+                <div
+                  key={pillIndex}
+                  className="absolute border border-gray-400 bg-white px-4 py-2 rounded-full shadow-md text-sm font-medium text-gray-800 whitespace-nowrap z-10"
+                  style={{
+                    top: pill.top,
+                    bottom: pill.bottom,
+                    left: pill.left,
+                    right: pill.right,
+                  }}
+                >
+                  {pill.text}
+                </div>
+              ))}
+            </motion.div>
+          ))}
         </motion.div>
       </div>
 
@@ -281,51 +327,6 @@ export function Hero() {
           </circle>
         </svg>
       </div>
-
-      {/* Image Gallery */}
-      <motion.div
-        className="flex gap-4 md:gap-6 justify-center items-end px-4 max-w-6xl mx-auto -mt-52 pb-16 relative z-10"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {images.map((img, index) => (
-          <motion.div
-            key={index}
-            className="relative shrink-0 w-56 md:w-72 lg:w-80"
-            style={{ rotate: img.rotate, y: img.y }}
-            whileHover={{ scale: 1.05, rotate: 0, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Image with border radius and clipping */}
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-gray-400 shadow-2xl">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 224px, (max-width: 1024px) 288px, 320px"
-              />
-            </div>
-            
-            {/* Floating Pills - positioned outside the image frame */}
-            {img.pills.map((pill, pillIndex) => (
-              <div
-                key={pillIndex}
-                className="absolute border border-gray-400 bg-white px-4 py-2 rounded-full shadow-md text-sm font-medium text-gray-800 whitespace-nowrap z-10"
-                style={{
-                  top: pill.top,
-                  bottom: pill.bottom,
-                  left: pill.left,
-                  right: pill.right,
-                }}
-              >
-                {pill.text}
-              </div>
-            ))}
-          </motion.div>
-        ))}
-      </motion.div>
     </section>
   )
 }
