@@ -40,6 +40,7 @@ const images = [
 
 export function Hero() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,31 +49,76 @@ export function Hero() {
     return () => clearInterval(interval)
   }, [])
 
+  const navLinks = [
+    { href: '#features', label: 'Features' },
+    { href: '#how-it-works', label: 'How it Works' },
+    { href: '#pricing', label: 'Pricing' },
+    { href: '#faq', label: 'FAQ' },
+  ]
+
   return (
     <section suppressHydrationWarning className="relative bg-[#f0f0f0] overflow-hidden">
       {/* Floating Nav */}
-      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-        <nav className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-sm border-2 border-gray-200" style={{ width: '820px', maxWidth: '90vw' }}>
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90vw] max-w-[820px]">
+        <nav className="relative flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-4 sm:px-6 py-3 shadow-sm border-2 border-gray-200">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center shrink-0">
               <span className="text-white font-bold text-lg">✦</span>
             </div>
             <span className="font-semibold text-lg text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>Brand Studio</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Link href="#features" className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100">
-              Features
-            </Link>
-            <Link href="#how-it-works" className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100">
-              How it Works
-            </Link>
-            <Link href="#pricing" className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100">
-              Pricing
-            </Link>
-            <Link href="#faq" className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100">
-              FAQ
-            </Link>
+
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100">
+                {link.label}
+              </Link>
+            ))}
           </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+
+          {/* Mobile Dropdown */}
+          {mobileMenuOpen && (
+            <>
+              <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200 py-2 z-50 md:hidden">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-6 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div className="border-t border-gray-100 my-1" />
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-6 py-3 text-sm font-semibold text-violet-600 hover:bg-violet-50 transition-colors"
+                >
+                  Log In
+                </Link>
+              </div>
+            </>
+          )}
         </nav>
       </div>
 
