@@ -21,7 +21,7 @@ const plans = [
   {
     name: 'Pro',
     description: 'For startups ready to level up. Best for growing products.',
-    price: '$29',
+    price: '$9',
     period: '/month',
     cta: 'Start Free Trial',
     popular: true,
