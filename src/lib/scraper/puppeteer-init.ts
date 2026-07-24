@@ -42,11 +42,11 @@ export async function createPage(): Promise<Page> {
     deviceScaleFactor: 2
   })
 
-  // Block unnecessary resources for faster loading
+  // Block heavy resources for faster loading (keep stylesheets and fonts for color/font extraction)
   await page.setRequestInterception(true)
   page.on('request', (req) => {
     const type = req.resourceType()
-    if (['image', 'media', 'font', 'stylesheet'].includes(type)) {
+    if (['image', 'media'].includes(type)) {
       req.abort()
     } else {
       req.continue()

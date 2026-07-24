@@ -282,6 +282,15 @@ export default function V2ProjectDetailPage() {
     fetchProject()
   }, [id])
 
+  // Poll for status updates while project is processing
+  useEffect(() => {
+    if (!project || project.status === 'completed' || project.status === 'failed') return
+    const interval = setInterval(() => {
+      fetchProject()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [project?.status, id])
+
   const fetchProject = async () => {
     try {
       const response = await fetch(`/api/brand-kit/${id}`)
@@ -409,6 +418,33 @@ export default function V2ProjectDetailPage() {
         <p className="text-gray-500">{error || 'Project not found'}</p>
         <Link href="/v2/projects">
           <Button variant="outline" className="mt-4">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Projects
+          </Button>
+        </Link>
+      </div>
+    )
+  }
+
+  if (project.status === 'processing') {
+    return (
+      <div className="text-center py-20 space-y-6">
+        <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto" />
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">Building your brand system</h2>
+          <p className="text-sm text-gray-500 mt-1">Analyzing {project.websiteUrl || project.brandName}...</p>
+        </div>
+        <div className="max-w-xs mx-auto space-y-2">
+          {['Connecting to website', 'Extracting colors', 'Detecting typography', 'Creating design tokens'].map((step, i) => (
+            <div key={step} className="flex items-center gap-2 text-sm text-gray-500">
+              <div className={`w-4 h-4 rounded-full border-2 ${i < 2 ? 'border-violet-500 bg-violet-500' : 'border-gray-300'} flex items-center justify-center`}>
+                {i < 2 && <Check className="w-2.5 h-2.5 text-white" />}
+              </div>
+              {step}
+            </div>
+          ))}
+        </div>
+        <Link href="/v2/projects">
+          <Button variant="outline" className="mt-4 border-gray-200">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Projects
           </Button>
         </Link>

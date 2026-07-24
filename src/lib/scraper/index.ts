@@ -21,12 +21,12 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     
     // Navigate to URL
     await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 30000
+      waitUntil: 'domcontentloaded',
+      timeout: 15000
     })
     
-    // Wait for page to load
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // Wait for page to be interactive
+    await new Promise(resolve => setTimeout(resolve, 1000))
     
     // Extract metadata
     const metadata = await page.evaluate(() => {

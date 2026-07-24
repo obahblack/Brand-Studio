@@ -66,6 +66,16 @@ export default function V2ProjectsPage() {
     }
   }, [sessionResult.isPending, sessionResult.data, fetchProjects, router])
 
+  // Poll for projects that are still processing
+  useEffect(() => {
+    const hasProcessing = projects.some(p => p.status === 'processing')
+    if (!hasProcessing) return
+    const interval = setInterval(() => {
+      fetchProjects()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [projects, fetchProjects])
+
   const closeDropdown = useCallback(() => {
     setOpenDropdownId(null)
     setDropdownPos(null)
