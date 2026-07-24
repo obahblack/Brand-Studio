@@ -66,6 +66,8 @@ export const brandKits = pgTable("brand_kits", {
   brandAnalysis: jsonb("brand_analysis"),
   designSystem: jsonb("design_system"),
   colorPalette: jsonb("color_palette"),
+  colorSystem: jsonb("color_system"),
+  analysisProgress: jsonb("analysis_progress"),
   typography: jsonb("typography"),
   designTokens: jsonb("design_tokens"),
   status: text("status").default("pending"),

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ArrowLeft, Palette, Type, Layers, Image, Download, Plus, Sparkles, Copy, Check, ChevronRight, X, Loader2, MoreHorizontal, ExternalLink, Trash2, RefreshCw } from 'lucide-react'
+import { ColorStyleTab } from '@/components/brand/color-style-tab'
 import { InstagramIcon, FacebookIcon, TwitterXIcon, TikTokIcon, LinkedInIcon, YouTubeIcon, PinterestIcon, ThreadsIcon, SnapchatIcon, RedditIcon, DiscordIcon, TelegramIcon, WhatsAppIcon, MastodonIcon, BlueskyIcon, TwitchIcon, MediumIcon, SubstackIcon } from '@/components/icons/platform-icons'
 
 const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -108,6 +109,18 @@ interface BrandKit {
   brandAnalysis: Record<string, unknown> | null
   designSystem: Record<string, unknown> | null
   colorPalette: Record<string, Record<string, string>> | null
+  colorSystem: {
+    status: string
+    sourceType: string
+    version: number
+    primitive: Record<string, Record<string, { value: string; source: string; confidence?: number; description?: string }>>
+    semantic: Record<string, Record<string, { value: string; source: string; confidence?: number; description?: string }>>
+    component: Record<string, Record<string, { value: string; source: string; confidence?: number; description?: string }>>
+    social: Record<string, { value: string; source: string; confidence?: number; description?: string }>
+    pairings: { background: string; foreground: string; usage: string; contrastRatio: number; passesAA: boolean; passesAAA: boolean; recommendedAssetType?: string }[]
+    lastAnalyzedAt?: string
+    generatedRationale?: string
+  } | null
   typography: {
     headingFont: string
     bodyFont: string
@@ -651,6 +664,7 @@ export default function V2ProjectDetailPage() {
           const data = {
             brandName: project.brandName,
             colors: colorPalette,
+            colorSystem: project.colorSystem,
             typography,
             designTokens,
             buttons: designSystem.buttons,
@@ -752,39 +766,14 @@ export default function V2ProjectDetailPage() {
 
         {/* ==================== COLORS TAB ==================== */}
         <TabsContent value="colors" className="space-y-6">
-          {Object.keys(colorPalette).length === 0 ? (
-            <Card className="border-gray-200">
-              <CardContent className="py-12 text-center">
-                <Palette className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">No color palette generated yet</p>
-              </CardContent>
-            </Card>
-          ) : (
-            Object.entries(colorPalette).map(([groupName, colors]) => (
-              <Card key={groupName} className="border-gray-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base capitalize">{groupName}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2">
-                    {Object.entries(colors).map(([shade, hex]) => (
-                      <div key={shade} className="flex-1 group">
-                        <button onClick={() => handleCopy(hex)}
-                          className="h-16 w-full rounded-lg cursor-pointer relative overflow-hidden border border-gray-100"
-                          style={{ backgroundColor: hex }}>
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
-                            {copied === hex ? <Check className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4 text-white" />}
-                          </div>
-                        </button>
-                        <p className="text-[10px] text-gray-400 mt-1.5 text-center font-mono">{hex}</p>
-                        <p className="text-[10px] text-gray-300 text-center">{shade}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+          <ColorStyleTab
+            colorSystem={project.colorSystem as any || null}
+            colorPalette={colorPalette}
+            websiteUrl={project.websiteUrl}
+            brandName={project.brandName}
+            onCopy={handleCopy}
+            copied={copied}
+          />
         </TabsContent>
 
         {/* ==================== TYPOGRAPHY TAB ==================== */}

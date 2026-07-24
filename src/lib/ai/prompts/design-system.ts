@@ -1,198 +1,175 @@
-export const designSystemPrompt = `You are a design system expert. Based on the brand analysis below, generate a complete, cohesive design system.
+export const designSystemPrompt = `You are a design system expert and color scientist. Based on the brand analysis and extracted website colors below, generate a complete, cohesive design system with a full 3-layer color token architecture.
 
 Brand Analysis:
 {brandAnalysis}
 
-Generate a comprehensive design system with the following structure. Be specific with exact hex values, pixel sizes, and font names.
+Extracted Website Colors:
+{extractedColors}
 
-Return as JSON with this exact structure:
+Generate a comprehensive design system. Return as JSON with this exact structure:
+
 {
   "colors": {
-    "primary": {
-      "50": "#hex",
-      "100": "#hex",
-      "200": "#hex",
-      "300": "#hex",
-      "400": "#hex",
-      "500": "#hex",
-      "600": "#hex",
-      "700": "#hex",
-      "800": "#hex",
-      "900": "#hex"
-    },
-    "secondary": {
-      "50": "#hex",
-      "100": "#hex",
-      "200": "#hex",
-      "300": "#hex",
-      "400": "#hex",
-      "500": "#hex",
-      "600": "#hex",
-      "700": "#hex",
-      "800": "#hex",
-      "900": "#hex"
-    },
-    "accent": {
-      "50": "#hex",
-      "100": "#hex",
-      "200": "#hex",
-      "300": "#hex",
-      "400": "#hex",
-      "500": "#hex",
-      "600": "#hex",
-      "700": "#hex",
-      "800": "#hex",
-      "900": "#hex"
-    },
-    "neutral": {
-      "50": "#hex",
-      "100": "#hex",
-      "200": "#hex",
-      "300": "#hex",
-      "400": "#hex",
-      "500": "#hex",
-      "600": "#hex",
-      "700": "#hex",
-      "800": "#hex",
-      "900": "#hex"
-    },
-    "background": {
-      "light": "#hex",
-      "DEFAULT": "#hex",
-      "dark": "#hex"
-    }
+    "primary": { "50": "#hex", "100": "#hex", "200": "#hex", "300": "#hex", "400": "#hex", "500": "#hex", "600": "#hex", "700": "#hex", "800": "#hex", "900": "#hex" },
+    "secondary": { "50": "#hex", "100": "#hex", "200": "#hex", "300": "#hex", "400": "#hex", "500": "#hex", "600": "#hex", "700": "#hex", "800": "#hex", "900": "#hex" },
+    "accent": { "50": "#hex", "100": "#hex", "200": "#hex", "300": "#hex", "400": "#hex", "500": "#hex", "600": "#hex", "700": "#hex", "800": "#hex", "900": "#hex" },
+    "neutral": { "50": "#hex", "100": "#hex", "200": "#hex", "300": "#hex", "400": "#hex", "500": "#hex", "600": "#hex", "700": "#hex", "800": "#hex", "900": "#hex" },
+    "background": { "light": "#hex", "DEFAULT": "#hex", "dark": "#hex" }
   },
-  "typography": {
-    "headingFont": "Font Name",
-    "bodyFont": "Font Name",
-    "scale": {
-      "h1": {
-        "size": "48px",
-        "weight": "700",
-        "lineHeight": "1.2",
-        "letterSpacing": "-0.02em"
+  "colorSystem": {
+    "semantic": {
+      "brand": {
+        "primary": { "value": "#hex", "description": "Main brand color for primary actions and key brand elements" },
+        "primary-hover": { "value": "#hex", "description": "Hover state for primary elements" },
+        "primary-active": { "value": "#hex", "description": "Active/pressed state for primary elements" },
+        "secondary": { "value": "#hex", "description": "Secondary brand color" },
+        "secondary-hover": { "value": "#hex", "description": "Hover state for secondary elements" },
+        "accent": { "value": "#hex", "description": "Accent highlight color for emphasis" },
+        "accent-subtle": { "value": "#hex", "description": "Subtle accent for backgrounds and highlights" }
       },
-      "h2": {
-        "size": "36px",
-        "weight": "600",
-        "lineHeight": "1.3",
-        "letterSpacing": "-0.01em"
+      "background": {
+        "canvas": { "value": "#hex", "description": "Page background" },
+        "surface": { "value": "#hex", "description": "Card and surface background" },
+        "surface-alt": { "value": "#hex", "description": "Alternate section background" },
+        "subtle": { "value": "#hex", "description": "Subtle tinted background" },
+        "inverse": { "value": "#hex", "description": "Dark/inverted background" }
       },
-      "h3": {
-        "size": "24px",
-        "weight": "600",
-        "lineHeight": "1.4"
+      "text": {
+        "primary": { "value": "#hex", "description": "Primary body text color" },
+        "secondary": { "value": "#hex", "description": "Secondary/supporting text" },
+        "muted": { "value": "#hex", "description": "Muted/placeholder text" },
+        "inverse": { "value": "#hex", "description": "Text on dark backgrounds" },
+        "on-brand": { "value": "#hex", "description": "Text color on brand primary background" },
+        "link": { "value": "#hex", "description": "Link color" },
+        "link-hover": { "value": "#hex", "description": "Link hover state" },
+        "disabled": { "value": "#hex", "description": "Disabled text" }
       },
-      "h4": {
-        "size": "20px",
-        "weight": "600",
-        "lineHeight": "1.4"
+      "border": {
+        "default": { "value": "#hex", "description": "Default border color" },
+        "subtle": { "value": "#hex", "description": "Subtle separator" },
+        "strong": { "value": "#hex", "description": "Strong emphasis border" },
+        "focus": { "value": "#hex", "description": "Focus ring color" },
+        "disabled": { "value": "#hex", "description": "Disabled border" }
       },
-      "body": {
-        "size": "16px",
-        "weight": "400",
-        "lineHeight": "1.6"
-      },
-      "small": {
-        "size": "14px",
-        "weight": "400",
-        "lineHeight": "1.5"
+      "status": {
+        "info": { "value": "#hex", "description": "Informational color" },
+        "info-background": { "value": "#hex", "description": "Info background" },
+        "success": { "value": "#hex", "description": "Success color" },
+        "success-background": { "value": "#hex", "description": "Success background" },
+        "warning": { "value": "#hex", "description": "Warning color" },
+        "warning-background": { "value": "#hex", "description": "Warning background" },
+        "error": { "value": "#hex", "description": "Error color" },
+        "error-background": { "value": "#hex", "description": "Error background" }
       }
-    }
-  },
-  "spacing": {
-    "xs": "4px",
-    "sm": "8px",
-    "md": "16px",
-    "lg": "24px",
-    "xl": "32px",
-    "2xl": "48px",
-    "3xl": "64px"
-  },
-  "borderRadius": {
-    "none": "0px",
-    "sm": "4px",
-    "md": "8px",
-    "lg": "12px",
-    "xl": "16px",
-    "2xl": "24px",
-    "full": "9999px"
-  },
-  "shadows": {
-    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-    "DEFAULT": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-    "md": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-    "lg": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-    "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
-  },
-  "buttons": {
-    "primary": {
-      "bg": "(use the 500 shade of your primary palette e.g. #2563EB)",
-      "text": "#ffffff",
-      "hoverBg": "(use the 600 shade of your primary palette e.g. #1D4ED8)",
-      "radius": "12px",
-      "padding": "12px 24px",
-      "fontSize": "16px",
-      "fontWeight": "600"
     },
-    "secondary": {
-      "bg": "(use the 500 shade of your secondary palette)",
-      "text": "#ffffff",
-      "hoverBg": "(use the 600 shade of your secondary palette)",
-      "radius": "12px",
-      "padding": "12px 24px",
-      "fontSize": "16px",
-      "fontWeight": "600"
+    "component": {
+      "button-primary": {
+        "background": { "value": "#hex", "description": "Primary button background" },
+        "background-hover": { "value": "#hex", "description": "Primary button hover" },
+        "background-active": { "value": "#hex", "description": "Primary button active" },
+        "background-disabled": { "value": "#hex", "description": "Primary button disabled" },
+        "text": { "value": "#hex", "description": "Primary button text" },
+        "text-disabled": { "value": "#hex", "description": "Primary button disabled text" },
+        "focus-ring": { "value": "#hex", "description": "Primary button focus ring" }
+      },
+      "button-secondary": {
+        "background": { "value": "#hex", "description": "Secondary button background" },
+        "background-hover": { "value": "#hex", "description": "Secondary button hover" },
+        "text": { "value": "#hex", "description": "Secondary button text" },
+        "focus-ring": { "value": "#hex", "description": "Secondary button focus ring" }
+      },
+      "button-destructive": {
+        "background": { "value": "#EF4444", "description": "Destructive button background" },
+        "background-hover": { "value": "#DC2626", "description": "Destructive button hover" },
+        "text": { "value": "#FFFFFF", "description": "Destructive button text" },
+        "focus-ring": { "value": "#EF4444", "description": "Destructive button focus ring" }
+      },
+      "input": {
+        "background": { "value": "#hex", "description": "Input background" },
+        "border": { "value": "#hex", "description": "Input border" },
+        "border-focus": { "value": "#hex", "description": "Input focus border" },
+        "text": { "value": "#hex", "description": "Input text" },
+        "placeholder": { "value": "#hex", "description": "Input placeholder" }
+      },
+      "card": {
+        "background": { "value": "#hex", "description": "Card background" },
+        "border": { "value": "#hex", "description": "Card border" }
+      }
     },
-    "outline": {
-      "bg": "transparent",
-      "text": "(use the 500 shade of your primary palette)",
-      "border": "2px solid (use the 500 shade of your primary palette)",
-      "hoverBg": "(use the 50 shade of your primary palette)",
-      "radius": "12px",
-      "padding": "10px 22px",
-      "fontSize": "16px",
-      "fontWeight": "600"
+    "social": {
+      "background-primary": { "value": "#hex", "description": "Main social media asset background" },
+      "background-secondary": { "value": "#hex", "description": "Secondary social background" },
+      "background-dark": { "value": "#hex", "description": "Dark social asset background" },
+      "headline": { "value": "#hex", "description": "Social headline text" },
+      "body-text": { "value": "#hex", "description": "Social body text" },
+      "muted-text": { "value": "#hex", "description": "Social muted text" },
+      "cta-background": { "value": "#hex", "description": "Social CTA button background" },
+      "cta-text": { "value": "#hex", "description": "Social CTA text" },
+      "highlight": { "value": "#hex", "description": "Highlight/accent color" },
+      "decorative-accent": { "value": "#hex", "description": "Decorative accent" },
+      "border-frame": { "value": "#hex", "description": "Frame/border on social assets" },
+      "gradient-start": { "value": "#hex", "description": "Gradient start color" },
+      "gradient-end": { "value": "#hex", "description": "Gradient end color" }
     },
-    "ghost": {
-      "bg": "transparent",
-      "text": "(use the 700 shade of your neutral palette)",
-      "hoverBg": "(use the 100 shade of your neutral palette)",
-      "radius": "12px",
-      "padding": "12px 24px",
-      "fontSize": "16px",
-      "fontWeight": "500"
-    }
+    "pairings": [
+      { "background": "#hex", "foreground": "#hex", "usage": "Description of use", "contrastRatio": 7.5, "passesAA": true, "passesAAA": true },
+      { "background": "#hex", "foreground": "#hex", "usage": "Description of use", "contrastRatio": 4.8, "passesAA": true, "passesAAA": false }
+    ]
   },
-  "cards": {
-    "bg": "#ffffff",
-    "border": "1px solid (use the 200 shade of your neutral palette)",
-    "radius": "16px",
-    "shadow": "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-    "padding": "24px"
-  },
-  "forms": {
-    "input": {
-      "bg": "#ffffff",
-      "border": "1px solid (use the 300 shade of your neutral palette)",
-      "radius": "8px",
-      "padding": "12px 16px",
-      "focusBorder": "(use the 500 shade of your primary palette)",
-      "focusShadow": "0 0 0 3px rgba(37, 99, 235, 0.1)"
-    },
-    "label": {
-      "fontSize": "14px",
-      "fontWeight": "500",
-      "color": "(use the 700 shade of your neutral palette)"
-    }
-  }
+  "typography": { ... },
+  "spacing": { ... },
+  "borderRadius": { ... },
+  "shadows": { ... },
+  "buttons": { ... },
+  "cards": { ... },
+  "forms": { ... }
 }
+
+Color System Requirements:
+1. The primary color should be the dominant brand color (use from extracted colors if available)
+2. The secondary color should complement the primary (use from extracted if available)
+3. The accent color should be distinctive and eye-catching for highlights
+4. Generate proper shade scales (50-900) for each color using perceptual color transforms
+5. Semantic tokens must reference or derive from brand colors where appropriate
+6. Status colors (info, success, warning, error) should be professional and accessible
+7. All foreground/background pairs must meet WCAG AA contrast (4.5:1 minimum)
+8. Social media colors should create compelling visual hierarchy
+9. Button states (hover, active, disabled) must be perceptually distinct
+10. Use the extracted website colors as the foundation - do not ignore them
+11. Backgrounds should be light and clean unless the brand is dark-themed
+12. Generate at least 6 meaningful color pairings for the pairings array
 
 Design Guidelines:
 1. Colors should be harmonious and reflect the brand personality
-2. Typography should be readable and professional
-3. Spacing should be consistent and create visual rhythm
-4. Components should feel modern and clean
-5. Use Google Fonts that are widely available
-6. Ensure sufficient contrast for accessibility
-7. Create a cohesive visual language across all elements`
+2. Ensure sufficient contrast for accessibility (WCAG AA minimum)
+3. Create a cohesive visual language across all elements
+4. Derive hover, active, and disabled states from base colors using HSL transforms
+5. Status colors should be distinct from brand colors
+6. Social media palette should work across light and dark asset backgrounds`
+
+
+export const brandColorSystemPrompt = `You are a brand color system architect. Given the brand analysis and extracted website colors, determine the 3 foundational brand colors:
+
+1. PRIMARY: The dominant brand color used for key actions, headers, and primary brand elements
+2. SECONDARY: A complementary color used for secondary actions and supporting elements
+3. ACCENT: A distinctive highlight color for emphasis, badges, and decorative elements
+
+Brand Analysis:
+{brandAnalysis}
+
+Extracted Website Colors:
+{extractedColors}
+
+Rules:
+- If the website has clear brand colors, use them directly
+- If the website colors are generic (white/black/gray), generate colors based on brand personality and industry
+- The three colors must be visually distinct and harmonious
+- Consider color psychology for the industry
+- The primary color should have the highest visual prominence
+- Return ONLY a JSON object:
+{
+  "primary": "#hex",
+  "secondary": "#hex",
+  "accent": "#hex",
+  "rationale": "Brief explanation of color choices"
+}`

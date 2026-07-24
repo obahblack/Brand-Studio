@@ -14,7 +14,9 @@ export async function getBrowser(): Promise<Browser> {
         '--no-first-run',
         '--no-zygote',
         '--single-process',
-        '--disable-gpu'
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-background-networking',
       ]
     })
   }
@@ -31,14 +33,25 @@ export async function closeBrowser(): Promise<void> {
 export async function createPage(): Promise<Page> {
   const b = await getBrowser()
   const page = await b.newPage()
-  
+
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-  
+
   await page.setViewport({
     width: 1920,
     height: 1080,
     deviceScaleFactor: 2
   })
-  
+
+  // Block unnecessary resources for faster loading
+  await page.setRequestInterception(true)
+  page.on('request', (req) => {
+    const type = req.resourceType()
+    if (['image', 'media', 'font', 'stylesheet'].includes(type)) {
+      req.abort()
+    } else {
+      req.continue()
+    }
+  })
+
   return page
 }

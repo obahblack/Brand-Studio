@@ -17,6 +17,7 @@ export interface BrandKit {
   brand_analysis: BrandAnalysis | null
   design_system: DesignSystem | null
   color_palette: ColorPalette | null
+  color_system: ColorSystem | null
   typography: Typography | null
   design_tokens: DesignTokens | null
   status: 'pending' | 'processing' | 'completed' | 'failed'
@@ -57,6 +58,172 @@ export interface ColorPalette {
   accent: Record<string, string>
   neutral: Record<string, string>
   background: Record<string, string>
+}
+
+export interface ColorToken {
+  value: string
+  source: 'extracted' | 'inferred' | 'generated' | 'manually_overridden'
+  confidence?: number
+  description?: string
+  evidence?: { page: string; selector: string; property: string }[]
+  isOverridden?: boolean
+}
+
+export interface SemanticColors {
+  brand: {
+    primary: ColorToken
+    'primary-hover': ColorToken
+    'primary-active': ColorToken
+    secondary: ColorToken
+    'secondary-hover': ColorToken
+    accent: ColorToken
+    'accent-subtle': ColorToken
+  }
+  background: {
+    canvas: ColorToken
+    surface: ColorToken
+    'surface-alt': ColorToken
+    subtle: ColorToken
+    inverse: ColorToken
+    overlay: ColorToken
+  }
+  text: {
+    primary: ColorToken
+    secondary: ColorToken
+    muted: ColorToken
+    inverse: ColorToken
+    'on-brand': ColorToken
+    link: ColorToken
+    'link-hover': ColorToken
+    disabled: ColorToken
+  }
+  border: {
+    default: ColorToken
+    subtle: ColorToken
+    strong: ColorToken
+    focus: ColorToken
+    inverse: ColorToken
+    disabled: ColorToken
+  }
+  status: {
+    info: ColorToken
+    'info-background': ColorToken
+    'info-border': ColorToken
+    success: ColorToken
+    'success-background': ColorToken
+    'success-border': ColorToken
+    warning: ColorToken
+    'warning-background': ColorToken
+    'warning-border': ColorToken
+    error: ColorToken
+    'error-background': ColorToken
+    'error-border': ColorToken
+  }
+}
+
+export interface ComponentColors {
+  'button-primary': {
+    background: ColorToken
+    'background-hover': ColorToken
+    'background-active': ColorToken
+    'background-disabled': ColorToken
+    text: ColorToken
+    'text-disabled': ColorToken
+    border: ColorToken
+    'focus-ring': ColorToken
+  }
+  'button-secondary': {
+    background: ColorToken
+    'background-hover': ColorToken
+    'background-active': ColorToken
+    'background-disabled': ColorToken
+    text: ColorToken
+    'text-disabled': ColorToken
+    border: ColorToken
+    'focus-ring': ColorToken
+  }
+  'button-destructive': {
+    background: ColorToken
+    'background-hover': ColorToken
+    'background-active': ColorToken
+    'background-disabled': ColorToken
+    text: ColorToken
+    border: ColorToken
+    'focus-ring': ColorToken
+  }
+  input: {
+    background: ColorToken
+    text: ColorToken
+    placeholder: ColorToken
+    border: ColorToken
+    'border-focus': ColorToken
+    'background-disabled': ColorToken
+  }
+  card: {
+    background: ColorToken
+    border: ColorToken
+    'shadow-color': ColorToken
+  }
+  badge: {
+    'default-background': ColorToken
+    'default-text': ColorToken
+    'success-background': ColorToken
+    'success-text': ColorToken
+    'warning-background': ColorToken
+    'warning-text': ColorToken
+    'error-background': ColorToken
+    'error-text': ColorToken
+  }
+  navigation: {
+    background: ColorToken
+    'active-background': ColorToken
+    text: ColorToken
+    'active-text': ColorToken
+  }
+  divider: { default: ColorToken }
+  icon: { default: ColorToken; muted: ColorToken; inverse: ColorToken }
+}
+
+export interface SocialColors {
+  'background-primary': ColorToken
+  'background-secondary': ColorToken
+  'background-dark': ColorToken
+  headline: ColorToken
+  'body-text': ColorToken
+  'muted-text': ColorToken
+  'cta-background': ColorToken
+  'cta-text': ColorToken
+  highlight: ColorToken
+  'decorative-accent': ColorToken
+  'border-frame': ColorToken
+  'photo-overlay': ColorToken
+  'gradient-start': ColorToken
+  'gradient-end': ColorToken
+}
+
+export interface ColorPairing {
+  background: string
+  foreground: string
+  usage: string
+  contrastRatio: number
+  passesAA: boolean
+  passesAAA: boolean
+  recommendedAssetType?: string
+}
+
+export interface ColorSystem {
+  status: 'queued' | 'extracting' | 'classifying' | 'generating' | 'partially_ready' | 'ready' | 'failed'
+  sourceType: 'website' | 'generated' | 'partially_extracted'
+  version: number
+  primitive: Record<string, Record<string, ColorToken>>
+  semantic: SemanticColors
+  component: ComponentColors
+  social: SocialColors
+  pairings: ColorPairing[]
+  extractionEvidence?: { page: string; selector: string; property: string; value: string; role: string }[]
+  generatedRationale?: string
+  lastAnalyzedAt?: string
+  updatedAt: string
 }
 
 export interface Typography {

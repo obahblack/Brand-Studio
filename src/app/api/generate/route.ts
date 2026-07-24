@@ -4,6 +4,7 @@ import { brandKits } from '@/db/schema'
 import { scrapeWebsite } from '@/lib/scraper'
 import { generateBrandKit } from '@/lib/ai/brand-generator'
 import { generateFallbackPalette, generateFallbackDesignSystem, generateFallbackBrandAnalysis } from '@/lib/ai/fallback'
+import { generateFallbackColorSystem } from '@/lib/ai/color-system-generator'
 import { getSessionFromRequest } from '@/lib/auth-helpers'
 import { eq } from 'drizzle-orm'
 
@@ -140,6 +141,7 @@ async function processBrandKit(
       brandAnalysis: result.brandAnalysis,
       designSystem: result.designSystem,
       colorPalette: result.designSystem.colors,
+      colorSystem: result.colorSystem,
       typography: result.designSystem.typography,
       designTokens: {
         colors: result.designSystem.colors,
@@ -157,6 +159,7 @@ async function processBrandKit(
 
     const fallbackPalette = generateFallbackPalette(input.brandName)
     const fallbackDesignSystem = generateFallbackDesignSystem(input.brandName)
+    const fallbackColorSystem = generateFallbackColorSystem(input.brandName)
     const fallbackTypography = fallbackDesignSystem.typography
     const fallbackTokens = {
       colors: fallbackPalette,
@@ -170,6 +173,7 @@ async function processBrandKit(
       brandAnalysis: generateFallbackBrandAnalysis(input.brandName),
       designSystem: fallbackDesignSystem,
       colorPalette: fallbackPalette,
+      colorSystem: fallbackColorSystem,
       typography: fallbackTypography,
       designTokens: fallbackTokens,
       status: 'completed',
