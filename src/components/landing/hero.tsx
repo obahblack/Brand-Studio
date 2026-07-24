@@ -167,50 +167,76 @@ export function Hero() {
           </Link>
         </motion.div>
 
-        {/* Image Gallery - always 44px below the button */}
-        <motion.div
-          className="flex gap-4 md:gap-6 justify-center items-end px-4 max-w-6xl mx-auto mt-[120px] pb-16 relative z-10"
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {images.map((img, index) => (
-            <motion.div
-              key={index}
-              className="relative shrink-0 w-56 md:w-72 lg:w-80"
-              style={{ rotate: img.rotate, y: img.y }}
-              whileHover={{ scale: 1.05, rotate: 0, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Image with border radius and clipping */}
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-gray-400 shadow-2xl">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 224px, (max-width: 1024px) 288px, 320px"
-                />
-              </div>
-              
-              {/* Floating Pills - positioned outside the image frame */}
-              {img.pills.map((pill, pillIndex) => (
-                <div
-                  key={pillIndex}
-                  className="absolute border border-gray-400 bg-white px-4 py-2 rounded-full shadow-md text-sm font-medium text-gray-800 whitespace-nowrap z-10"
-                  style={{
-                    top: pill.top,
-                    bottom: pill.bottom,
-                    left: pill.left,
-                    right: pill.right,
-                  }}
-                >
-                  {pill.text}
+        {/* Image Gallery */}
+        <div className="w-full mt-[120px] relative z-10 overflow-hidden">
+          {/* Desktop: centered static row */}
+          <div className="hidden md:flex gap-6 justify-center items-end px-4 max-w-6xl mx-auto pb-16">
+            {images.map((img, index) => (
+              <motion.div
+                key={index}
+                className="relative shrink-0 w-64 lg:w-80"
+                style={{ rotate: img.rotate, y: img.y }}
+                initial={{ opacity: 0, y: 60 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ scale: 1.05, rotate: 0, y: 0 }}
+              >
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-gray-400 shadow-2xl">
+                  <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="320px" />
                 </div>
-              ))}
-            </motion.div>
-          ))}
-        </motion.div>
+                {img.pills.map((pill, pillIndex) => (
+                  <div
+                    key={pillIndex}
+                    className="absolute border border-gray-400 bg-white px-3 py-1.5 rounded-full shadow-md text-xs font-medium text-gray-800 whitespace-nowrap z-10"
+                    style={{ top: pill.top, bottom: pill.bottom, left: pill.left, right: pill.right }}
+                  >
+                    {pill.text}
+                  </div>
+                ))}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Mobile/Tablet: infinite scroll marquee */}
+          <div className="md:hidden flex flex-col items-center pb-12">
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-marquee {
+                animation: marquee 20s linear infinite;
+              }
+              .animate-marquee:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
+            <div className="w-full overflow-hidden">
+              <div className="flex animate-marquee w-max">
+                {[...images, ...images].map((img, index) => (
+                  <div
+                    key={index}
+                    className="relative shrink-0 w-40 mx-2"
+                    style={{ transform: `rotate(${img.rotate}deg)` }}
+                  >
+                    <div className="relative aspect-[3/4] rounded-xl overflow-hidden border border-gray-400 shadow-lg">
+                      <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="160px" />
+                    </div>
+                    {img.pills.map((pill, pillIndex) => (
+                      <div
+                        key={pillIndex}
+                        className="absolute border border-gray-300 bg-white px-2 py-1 rounded-full shadow-sm text-[10px] font-medium text-gray-800 whitespace-nowrap z-10"
+                        style={{ top: pill.top, bottom: pill.bottom, left: pill.left, right: pill.right }}
+                      >
+                        {pill.text}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Chaos Pattern Ring - Right Side */}
