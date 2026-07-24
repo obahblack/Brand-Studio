@@ -169,7 +169,7 @@ export function Hero() {
 
         {/* Image Gallery - always 44px below the button */}
         <motion.div
-          className="flex gap-4 md:gap-6 justify-center items-end px-4 max-w-6xl mx-auto mt-[72px] pb-16 relative z-10"
+          className="flex gap-4 md:gap-6 justify-center items-end px-4 max-w-6xl mx-auto mt-[120px] pb-16 relative z-10"
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
