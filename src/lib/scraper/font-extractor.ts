@@ -1,10 +1,40 @@
 import { Page } from 'puppeteer'
 
+const GOOGLE_FONTS_API = 'https://fonts.google.com'
+
+const POPULAR_GOOGLE_FONTS = [
+  'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Source Sans Pro',
+  'Nunito', 'Raleway', 'Ubuntu', 'Playfair Display', 'Merriweather', 'PT Serif',
+  'Work Sans', 'DM Sans', 'Noto Sans', 'Space Grotesk', 'Plus Jakarta Sans',
+  'Figtree', 'Sora', 'Clash Display', 'Cabinet Grotesk', 'General Sans',
+  'Jakarta Sans', 'Instrument Sans', 'Public Sans', 'Outfit', 'Onest',
+]
+
 export interface ExtractedFonts {
   headings: string[]
   body: string[]
   all: string[]
   weights: string[]
+  isGoogleFont: boolean
+  googleFontSuggestions: string[]
+}
+
+function suggestGoogleFont(rawName: string): string | null {
+  const cleaned = rawName.replace(/['"]/g, '').trim()
+  if (!cleaned) return null
+
+  const lower = cleaned.toLowerCase()
+  
+  const exact = POPULAR_GOOGLE_FONTS.find(f => f.toLowerCase() === lower)
+  if (exact) return exact
+
+  const partial = POPULAR_GOOGLE_FONTS.find(f => f.toLowerCase().includes(lower) || lower.includes(f.toLowerCase()))
+  if (partial) return partial
+
+  const systemFonts = ['system-ui', 'sans-serif', 'serif', 'monospace', 'arial', 'helvetica', 'times new roman', 'georgia', 'verdana', 'tahoma', 'trebuchet ms', 'courier new', 'impact']
+  if (systemFonts.includes(cleaned.toLowerCase())) return null
+
+  return null
 }
 
 export async function extractFonts(page: Page): Promise<ExtractedFonts> {
@@ -14,7 +44,6 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
     const headings: string[] = []
     const body: string[] = []
 
-    // Extract fonts from computed styles
     const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, span, div, button')
     
     elements.forEach(el => {
@@ -22,7 +51,6 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
       const fontFamily = computed.fontFamily
       const fontWeight = computed.fontWeight
       
-      // Parse font family
       const fonts = fontFamily.split(',').map(f => {
         return f.trim().replace(/['"]/g, '')
       })
@@ -33,7 +61,6 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
         }
       })
       
-      // Check if heading
       const tagName = el.tagName.toLowerCase()
       if (tagName.match(/^h[1-6]$/)) {
         fonts.forEach(font => {
@@ -49,11 +76,9 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
         })
       }
       
-      // Collect weights
       weights.add(fontWeight)
     })
 
-    // Extract from CSS custom properties
     const allStyles = document.styleSheets
     for (let i = 0; i < allStyles.length; i++) {
       try {
@@ -77,7 +102,6 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
           }
         }
       } catch {
-        // Cross-origin stylesheets
       }
     }
 
@@ -89,5 +113,17 @@ export async function extractFonts(page: Page): Promise<ExtractedFonts> {
     }
   })
 
-  return fonts
+  const googleFontSuggestions: string[] = []
+  for (const font of fonts.all) {
+    const suggestion = suggestGoogleFont(font)
+    if (suggestion && !googleFontSuggestions.includes(suggestion)) {
+      googleFontSuggestions.push(suggestion)
+    }
+  }
+
+  return {
+    ...fonts,
+    isGoogleFont: fonts.all.some(f => POPULAR_GOOGLE_FONTS.some(gf => gf.toLowerCase() === f.toLowerCase().replace(/['"]/g, '').trim())),
+    googleFontSuggestions: googleFontSuggestions.slice(0, 5),
+  }
 }

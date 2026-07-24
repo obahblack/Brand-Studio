@@ -27,7 +27,7 @@ export default function V2CreatePage() {
   const [brandName, setBrandName] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
   const [brandDescription, setBrandDescription] = useState('')
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['instagram', 'x', 'facebook'])
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [urlError, setUrlError] = useState<string | null>(null)

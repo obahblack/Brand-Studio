@@ -25,6 +25,20 @@ export interface BrandKit {
   updated_at: string
 }
 
+export interface BrandVoice {
+  style: string
+  personality: string[]
+  dos: string[]
+  donts: string[]
+  examples: {
+    formal: string
+    casual: string
+    social: string
+  }
+  adjectives: string[]
+  communicationValues: string[]
+}
+
 export interface BrandAnalysis {
   personality: string[]
   audience: string
@@ -32,6 +46,9 @@ export interface BrandAnalysis {
   visualStyle: string
   industry: string
   keywords: string[]
+  brandVoice?: BrandVoice
+  competitors?: string[]
+  uniqueSellingPoints?: string[]
 }
 
 export interface ColorPalette {
@@ -73,9 +90,10 @@ export interface DesignSystem {
 }
 
 export interface ButtonStyles {
-  primary: ButtonStyle
-  secondary: ButtonStyle
-  ghost: ButtonStyle
+  primary: ButtonStyle & { hoverBg?: string }
+  secondary: ButtonStyle & { hoverBg?: string }
+  outline?: ButtonStyle & { border?: string; hoverBg?: string }
+  ghost: ButtonStyle & { hoverBg?: string }
   destructive: ButtonStyle
 }
 

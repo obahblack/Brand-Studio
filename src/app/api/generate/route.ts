@@ -7,6 +7,41 @@ import { generateFallbackPalette, generateFallbackDesignSystem, generateFallback
 import { getSessionFromRequest } from '@/lib/auth-helpers'
 import { eq } from 'drizzle-orm'
 
+const PRIVATE_IP_RANGES = [
+  /^127\./,
+  /^10\./,
+  /^172\.(1[6-9]|2\d|3[01])\./,
+  /^192\.168\./,
+  /^0\./,
+  /^169\.254\./,
+  /^::1$/,
+  /^fc00:/,
+  /^fe80:/,
+]
+
+function sanitizeUrl(url: string): string | null {
+  try {
+    const trimmed = url.trim()
+    if (!trimmed) return null
+
+    const parsed = new URL(trimmed.startsWith('http') ? trimmed : `https://${trimmed}`)
+
+    if (!['http:', 'https:'].includes(parsed.protocol)) return null
+
+    const hostname = parsed.hostname.toLowerCase()
+
+    if (hostname === 'localhost' || hostname === '0.0.0.0') return null
+
+    for (const pattern of PRIVATE_IP_RANGES) {
+      if (pattern.test(hostname)) return null
+    }
+
+    return parsed.origin + parsed.pathname.replace(/\/+$/, '') || parsed.origin
+  } catch {
+    return null
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const sess = await getSessionFromRequest(request)
@@ -29,10 +64,18 @@ export async function POST(request: Request) {
       )
     }
 
+    const safeUrl = websiteUrl ? sanitizeUrl(websiteUrl) : null
+    if (websiteUrl?.trim() && !safeUrl) {
+      return NextResponse.json(
+        { error: 'Invalid or disallowed website URL' },
+        { status: 400 }
+      )
+    }
+
     const [brandKit] = await db.insert(brandKits).values({
       userId,
       brandName: brandName.trim(),
-      websiteUrl: websiteUrl?.trim() || null,
+      websiteUrl: safeUrl,
       brandDescription: brandDescription?.trim() || null,
       logoUrl: logoUrl || null,
       status: 'processing',
@@ -47,7 +90,7 @@ export async function POST(request: Request) {
 
     processBrandKit(brandKit.id, {
       brandName: brandName.trim(),
-      websiteUrl: websiteUrl?.trim() || null,
+      websiteUrl: safeUrl,
       brandDescription: brandDescription?.trim() || null,
       logoUrl: logoUrl || null
     }).catch(console.error)

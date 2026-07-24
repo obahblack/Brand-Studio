@@ -1,4 +1,4 @@
-import type { DesignSystem, BrandAnalysis } from '@/types/database'
+import type { DesignSystem, BrandAnalysis, BrandVoice } from '@/types/database'
 
 function hashString(s: string): number {
   return s.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
@@ -118,9 +118,10 @@ export function generateFallbackDesignSystem(brandName: string): DesignSystem {
       lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
     },
     buttons: {
-      primary: { bg: p500, text: '#FFFFFF', radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '600' },
-      secondary: { bg: s500, text: '#FFFFFF', radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '600' },
-      ghost: { bg: 'transparent', text: n700, radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '500' },
+      primary: { bg: p500, text: '#FFFFFF', hoverBg: p600, radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '600' },
+      secondary: { bg: s500, text: '#FFFFFF', hoverBg: s600, radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '600' },
+      outline: { bg: 'transparent', text: p500, border: `2px solid ${p500}`, hoverBg: p50, radius: '12px', padding: '10px 22px', fontSize: '16px', fontWeight: '600' },
+      ghost: { bg: 'transparent', text: n700, hoverBg: n100, radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '500' },
       destructive: { bg: '#EF4444', text: '#FFFFFF', radius: '12px', padding: '12px 24px', fontSize: '16px', fontWeight: '600' },
     },
     cards: { bg: '#FFFFFF', border: `1px solid ${n200}`, radius: '16px', shadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '24px' },
@@ -131,7 +132,7 @@ export function generateFallbackDesignSystem(brandName: string): DesignSystem {
   }
 }
 
-export function generateFallbackBrandAnalysis(brandName: string): BrandAnalysis {
+export function generateFallbackBrandAnalysis(brandName: string): BrandAnalysis & { brandVoice?: BrandVoice } {
   return {
     personality: ['modern', 'professional'],
     audience: 'General audience',
@@ -139,7 +140,26 @@ export function generateFallbackBrandAnalysis(brandName: string): BrandAnalysis 
     visualStyle: 'Clean and minimal',
     industry: 'Technology',
     keywords: [brandName.toLowerCase()],
+    brandVoice: {
+      style: 'Professional and approachable',
+      personality: ['confident', 'helpful', 'professional'],
+      dos: ['Be clear and concise', 'Use active voice', 'Focus on benefits'],
+      donts: ["Don't use jargon", 'Avoid overly formal language', "Don't make exaggerated claims"],
+      examples: {
+        formal: `${brandName} delivers enterprise-grade solutions for modern teams.`,
+        casual: `Get things done with ${brandName}. Simple, fast, effective.`,
+        social: `Level up your workflow with ${brandName} 🚀`,
+      },
+      adjectives: ['professional', 'reliable', 'innovative'],
+      communicationValues: ['Clarity', 'Efficiency', 'Innovation'],
+    },
+    competitors: [],
+    uniqueSellingPoints: [`Innovative solutions from ${brandName}`],
   }
+}
+
+export function generateFallbackBrandVoice(brandName: string): BrandVoice {
+  return generateFallbackBrandAnalysis(brandName).brandVoice!
 }
 
 export function generateFallbackGuidelines(brandName: string): Record<string, unknown> {

@@ -647,7 +647,23 @@ export default function V2ProjectDetailPage() {
           <h1 className="text-2xl font-bold text-gray-900">{project.brandName}</h1>
           {project.websiteUrl && <p className="text-sm text-gray-500 mt-1">{project.websiteUrl}</p>}
         </div>
-        <Button variant="outline" className="border-gray-200">
+        <Button variant="outline" className="border-gray-200" onClick={() => {
+          const data = {
+            brandName: project.brandName,
+            colors: colorPalette,
+            typography,
+            designTokens,
+            buttons: designSystem.buttons,
+            brandAnalysis: project.brandAnalysis,
+          }
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `${project.brandName.toLowerCase().replace(/\s+/g, '-')}-design-system.json`
+          a.click()
+          URL.revokeObjectURL(url)
+        }}>
           <Download className="w-4 h-4 mr-2" />
           Export Design System
         </Button>
@@ -671,7 +687,7 @@ export default function V2ProjectDetailPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-900">Assets</h2>
                 <Button className="bg-violet-600 hover:bg-violet-700" onClick={() => {
-                  setSelectedGeneratePlatforms(allPlatforms.map(p => p.id))
+                  setSelectedGeneratePlatforms([])
                   setCampaignName('')
                   setGenerateDescription('')
                   setShowPlatformPicker(true)

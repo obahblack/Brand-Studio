@@ -8,6 +8,60 @@ export interface ExtractedColors {
   texts: string[]
   borders: string[]
   all: string[]
+  classification: {
+    warm: string[]
+    cool: string[]
+    neutral: string[]
+    vibrant: string[]
+    muted: string[]
+    pastel: string[]
+  }
+  accessibility: {
+    pair: string
+    contrastRatio: number
+    passesAA: boolean
+    passesAAA: boolean
+  }[]
+}
+
+function luminance(r: number, g: number, b: number): number {
+  const [rl, gl, bl] = [r, g, b].map(c => {
+    const s = c / 255
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl
+}
+
+function contrastRatio(hex1: string, hex2: string): number {
+  const parse = (hex: string) => {
+    const h = hex.replace('#', '')
+    return {
+      r: parseInt(h.slice(0, 2), 16),
+      g: parseInt(h.slice(2, 4), 16),
+      b: parseInt(h.slice(4, 6), 16),
+    }
+  }
+  const c1 = parse(hex1)
+  const c2 = parse(hex2)
+  const l1 = luminance(c1.r, c1.g, c1.b)
+  const l2 = luminance(c2.r, c2.g, c2.b)
+  const lighter = Math.max(l1, l2)
+  const darker = Math.min(l1, l2)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function classifyColor(r: number, g: number, b: number): { warm: boolean; cool: boolean; vibrant: boolean; muted: boolean; pastel: boolean } {
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  const saturation = max === 0 ? 0 : (max - min) / max
+  
+  const isPastel = saturation < 0.3 && max > 180
+  const isVibrant = saturation > 0.6 && max > 100
+  const isMuted = saturation < 0.4 && !isPastel
+  const isWarm = r > g && r > b
+  const isCool = b > r && b > g
+
+  return { warm: isWarm, cool: isCool, vibrant: isVibrant, muted: isMuted, pastel: isPastel }
 }
 
 export async function extractColors(page: Page): Promise<ExtractedColors> {
@@ -20,7 +74,6 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
     const texts: string[] = []
     const borders: string[] = []
 
-    // Helper to convert RGB to hex
     const rgbToHex = (r: number, g: number, b: number): string => {
       return '#' + [r, g, b].map(x => {
         const hex = x.toString(16)
@@ -28,20 +81,17 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
       }).join('')
     }
 
-    // Helper to parse color string
     const parseColor = (color: string): string | null => {
       if (!color || color === 'transparent' || color === 'inherit' || color === 'initial') {
         return null
       }
       
-      // Handle rgb/rgba
       const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
       if (rgbMatch) {
         const [, r, g, b] = rgbMatch.map(Number)
         return rgbToHex(r, g, b)
       }
       
-      // Handle hex
       if (color.startsWith('#')) {
         if (color.length === 4) {
           return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
@@ -52,7 +102,6 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
       return null
     }
 
-    // Extract colors from computed styles
     const elements = document.querySelectorAll('*')
     elements.forEach(el => {
       const computed = window.getComputedStyle(el)
@@ -67,7 +116,6 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
       })
     })
 
-    // Extract CSS custom properties
     const allStyles = document.styleSheets
     for (let i = 0; i < allStyles.length; i++) {
       try {
@@ -89,14 +137,11 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
           }
         }
       } catch {
-        // Cross-origin stylesheets
       }
     }
 
-    // Convert set to array and categorize
     const allColors = Array.from(colorSet)
     
-    // Simple categorization based on position and usage
     allColors.forEach(color => {
       const r = parseInt(color.slice(1, 3), 16)
       const g = parseInt(color.slice(3, 5), 16)
@@ -114,7 +159,6 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
       }
     })
 
-    // Get most common colors
     const colorCounts = new Map<string, number>()
     allColors.forEach(color => {
       colorCounts.set(color, (colorCounts.get(color) || 0) + 1)
@@ -137,5 +181,41 @@ export async function extractColors(page: Page): Promise<ExtractedColors> {
     }
   })
 
-  return colors
+  const classification = { warm: [] as string[], cool: [] as string[], neutral: [] as string[], vibrant: [] as string[], muted: [] as string[], pastel: [] as string[] }
+  
+  for (const color of colors.all) {
+    const r = parseInt(color.slice(1, 3), 16)
+    const g = parseInt(color.slice(3, 5), 16)
+    const b = parseInt(color.slice(5, 7), 16)
+    const cat = classifyColor(r, g, b)
+    if (cat.warm) classification.warm.push(color)
+    if (cat.cool) classification.cool.push(color)
+    if (!cat.warm && !cat.cool) classification.neutral.push(color)
+    if (cat.vibrant) classification.vibrant.push(color)
+    if (cat.muted) classification.muted.push(color)
+    if (cat.pastel) classification.pastel.push(color)
+  }
+
+  const textColors = colors.texts.length > 0 ? colors.texts : ['#111827']
+  const bgColors = colors.backgrounds.length > 0 ? colors.backgrounds : ['#FFFFFF']
+  
+  const accessibility: { pair: string; contrastRatio: number; passesAA: boolean; passesAAA: boolean }[] = []
+  
+  for (const text of textColors.slice(0, 3)) {
+    for (const bg of bgColors.slice(0, 3)) {
+      const ratio = contrastRatio(text, bg)
+      accessibility.push({
+        pair: `${text} on ${bg}`,
+        contrastRatio: Math.round(ratio * 100) / 100,
+        passesAA: ratio >= 4.5,
+        passesAAA: ratio >= 7,
+      })
+    }
+  }
+
+  return {
+    ...colors,
+    classification,
+    accessibility,
+  }
 }
