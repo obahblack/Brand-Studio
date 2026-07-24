@@ -16,8 +16,8 @@ const steps = [
   },
   {
     number: '03',
-    title: 'Download your kit',
-    description: 'Get your complete brand system with design tokens, guidelines, and ready-to-use marketing templates.',
+    title: 'Generate social media assets',
+    description: 'Create on-brand visuals for Instagram, X, Facebook, LinkedIn, and more — then download or share directly.',
     image: '/placeholder-step3.svg',
   },
 ]
